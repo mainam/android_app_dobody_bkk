@@ -13,4 +13,43 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string name="text1">"Thank you for registering! We have just send an SMS with a verification code to your provided mobile number. Please enter the verification code to complete your registration process"    </string>
+    <string name="text2">"Verification Code"</string>
+    <string name="text3">"VERIFY"</string>
+    <string name="text4">RESEND</string>
+    <string name="text5">VERIFICATION</string>
+    <string name="text5">Your verification code is not valid!</string>
+    <string name="text5">MONEY REMITTANCE</string>
+    <string name="text5">Username</string>
+    <string name="text5">Password</string>
+    <string name="text5">LOGIN</string>
+    <string name="text5">REGISTER</string>
+    <string name="text5">Invalid login credentials!</string>
+    <string name="text5">ID Number (ID/Passport)</string>
+    <string name="text5">Mobile</string>
+    <string name="text5">Create Password</string>
+    <string name="text5">Confirm Password</string>
+    <string name="text5">Unmatched password</string>
+    <string name="text5">There is already an account registered with this details!</string>
+    <string name="text5">USER PROFILE</string>
+    <string name="text5">Thank you for registering! You are almost done. Please fill up the following information to complete your profile:</string>
+    <string name="text5">First Name</string>
+    <string name="text5">Last Name</string>
+    <string name="text5">Document Type</string>
+    <string name="text5">Document Validity Date</string>
+    <string name="text5">Email</string>
+    <string name="text5">Address</string>
+    <string name="text5">Date Of Birth</string>
+    <string name="text5">Male</string>
+    <string name="text5">Female</string>
+    <string name="text5">SAVE</string>
+    <string name="text5">Country Of Birth</string>
+    <string name="text5">Pending Verification!</string>
+    <string name="text5">We could not find your details in our database. For security reasons, please bring your photo ID (IC or Passport) to any BKK counters to verify you account!</string>
+    <string name="text5">OK</string>
+    <string name="text5">Resend verification code</string>
+    <string name="text5">SMS message delivery may take up to 5 minutes. Are you sure to get a new verification code (old verification code will be invalidated immediately)?</string>
+    <string name="text5">CANCEL</string>
+    <string name="text5">RESEND</string>
 </resources>
