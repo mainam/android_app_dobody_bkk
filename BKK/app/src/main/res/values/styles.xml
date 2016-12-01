@@ -6,6 +6,27 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/window_bg</item>
+        <item name="android:textColor">@color/white</item>
+
+        <item name="android:typeface">sans</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
+    <style name="TextLabel">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">#757ca2</item>
+        <item name="android:textSize">20sp</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">#757ca2</item>
+        <item name="colorControlNormal">#7fc9c3</item>
+        <item name="colorControlActivated">#7fc9c3</item>
+    </style>
+
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>
