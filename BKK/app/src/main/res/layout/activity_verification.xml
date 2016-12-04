@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="com.dobody.bkk.activity.LoginActivity">
@@ -21,54 +21,30 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/img_logo" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 android:layout_marginTop="40dp"
-                android:text="LOGIN"
+                android:text="@string/common_verification"
                 android:textSize="24sp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/common_verification_label_thankyou" />
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="@style/TextLabel">
-
-                <AutoCompleteTextView
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/common_username"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                app:passwordToggleEnabled="false"
-                app:errorEnabled="true"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:theme="@style/TextLabel">
 
                 <EditText
-                    android:id="@+id/password"
+                    android:id="@+id/txtVerificationCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
-                    android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
+                    android:hint="@string/common_verification_code"
                     android:maxLines="1"
                     android:textColor="@color/white"
                     android:textSize="15sp" />
@@ -82,22 +58,38 @@
                 android:gravity="center">
 
                 <Button
-                    android:id="@+id/btnRegister"
+                    android:id="@+id/btnVerify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LOGIN"
+                    android:text="@string/common_verify"
                     android:textColor="#323b74"
                     android:textStyle="bold" />
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/btnRegister"
+                    android:src="@drawable/ic_loading" />
+
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/btnResend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@+id/btnRegister"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="REGISTER" />
+                    android:layout_centerVertical="true"
+                    android:text="@string/common_resend" />
             </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:textColor="@color/red"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>

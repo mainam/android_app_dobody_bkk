@@ -40,6 +40,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.internal.framed.Header;
 
 /**
  * Created by MaiNam on 11/30/2016.
@@ -233,7 +234,7 @@ public class ClientUtils {
             }
 
             response = client.newCall(request).execute();
-            String bodyString = response.body().string();//getFromStream(response.body().byteStream(),"UTF-16");
+            String bodyString = response.body().string();
             Log.d(TAG, method + ": " + bodyString);
             return new DataResponse(response.code(), bodyString);
         } catch (SocketTimeoutException e) {
@@ -253,7 +254,7 @@ public class ClientUtils {
             OkHttpClient client = getClient(timeOut);
 
             Response response = client.newCall(request).execute();
-            String bodyString = response.body().string();//getFromStream(response.body().byteStream(),"UTF-16");
+            String bodyString = response.body().string();
             return new DataResponse(response.code(), bodyString);
         } catch (SocketTimeoutException e) {
             throw e;
