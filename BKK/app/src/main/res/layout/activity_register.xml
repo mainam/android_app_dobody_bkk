@@ -1,141 +1,150 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_form"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context="com.dobody.bkk.activity.LoginActivity">
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
 
-    <ScrollView
-        android:id="@+id/login_form"
+    <LinearLayout
+        android:id="@+id/email_login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/email_login_form"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/common_register"
+            android:textSize="24sp" />
+
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:theme="@style/TextLabel">
 
-            <TextView
+            <EditText
+                android:id="@+id/txtId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/common_id_number"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/txtMobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/common_mobile"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/txtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/common_username"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/txtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/common_create_password"
+                android:inputType="textPassword"
+
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/txtConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/common_confirm_password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:layout_marginTop="40dp"
                 android:text="@string/common_register"
-                android:textSize="24sp" />
+                android:textColor="#323b74"
+                android:textStyle="bold" />
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/ivProcessLoading"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/TextLabel">
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
+                android:layout_toRightOf="@+id/btnRegister"
+                android:src="@drawable/ic_loading" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/txtId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/common_id_number"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/btnLogin"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/TextLabel">
+                android:layout_alignBaseline="@+id/btnRegister"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/common_login" />
+        </RelativeLayout>
 
-                <EditText
-                    android:id="@+id/txtMobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/common_mobile"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
+        <TextView
+            android:id="@+id/tvErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/red"
+            android:textStyle="bold" />
 
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/TextLabel">
-
-                <EditText
-                    android:id="@+id/txtUserName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/common_username"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/TextLabel">
-
-                <EditText
-                    android:id="@+id/txtPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/common_create_password"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:theme="@style/TextLabel">
-
-                <EditText
-                    android:id="@+id/txtConfirmPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/common_confirm_password"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center">
-
-                <Button
-                    android:id="@+id/btnRegister"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/common_register"
-                    android:textColor="#323b74"
-                    android:textStyle="bold" />
-                <ImageView
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/btnRegister"
-                    android:src="@drawable/ic_loading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/btnRegister"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:text="@string/common_login" />
-            </RelativeLayout>
-
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

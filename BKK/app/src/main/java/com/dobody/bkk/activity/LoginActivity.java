@@ -1,6 +1,10 @@
 package com.dobody.bkk.activity;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,91 +17,101 @@ import android.widget.TextView;
 
 import com.dobody.bkk.BaseActivity;
 import com.dobody.bkk.R;
+import com.dobody.bkk.dataaccess.UserInfo;
+import com.dobody.bkk.utils.ClientUtils;
+import com.dobody.bkk.utils.ConvertUtils;
+import com.google.gson.JsonObject;
+
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends BaseActivity  {
+public class LoginActivity extends BaseActivity implements OnClickListener {
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mLoginFormView;
+    private EditText txtUserName;
+    private EditText txtPassword;
+    private View btnLogin;
+    private View ivLoading;
+    private TextView tvErrorMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        txtUserName = (EditText) findViewById(R.id.txtUserName);
+        txtPassword = (EditText) findViewById(R.id.txtPassword);
+        ivLoading = findViewById(R.id.ivProcessLoading);
+        tvErrorMessage = (TextView) findViewById(R.id.tvErrorMessage);
+        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(this);
+        findViewById(R.id.btnRegister).setOnClickListener(this);
+    }
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnLogin:
+                login(txtUserName.getText().toString(), txtPassword.getText().toString());
+                break;
+            case R.id.btnRegister:
+                RegisterActivity.open(getActivity());
+                finish();
+                break;
+        }
+    }
+
+
+    private void login(final String username, final String password) {
+        new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
+            protected void onPreExecute() {
+                btnLogin.setEnabled(false);
+                ivLoading.setVisibility(View.VISIBLE);
+                tvErrorMessage.setVisibility(View.GONE);
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(final ClientUtils.DataResponse aVoid) {
+                getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (aVoid != null && aVoid.is201()) {
+                            UserProfileActivity.open(getActivity());
+                            finish();
+                        } else {
+                            JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
+                            tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
+                            tvErrorMessage.setVisibility(View.VISIBLE);
+                        }
+                        btnLogin.setEnabled(true);
+                        ivLoading.setVisibility(View.GONE);
+                    }
+                }, 1000);
+                super.onPostExecute(aVoid);
+
+            }
+
+            @Override
+            protected ClientUtils.DataResponse doInBackground(Void... voids) {
+                try {
+                    return UserInfo.login(username, password);
+                } catch (SocketTimeoutException e) {
+                    e.printStackTrace();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
                 }
-                return false;
+                return null;
             }
-        });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.btnRegister);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-
-        mLoginFormView = findViewById(R.id.login_form);
+        }.execute();
     }
 
-
-
-    private void attemptLogin() {
-
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
+    public static void open(AppCompatActivity activity) {
+        activity.startActivity(new Intent(activity, LoginActivity.class));
     }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
-
 }
 

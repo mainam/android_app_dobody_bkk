@@ -10,6 +10,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
+import com.dobody.bkk.constant.Constants;
 import com.dobody.bkk.constant.ServerConstants;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -74,6 +75,25 @@ public class ClientUtils {
 
 
     public static class DataResponse {
+        public DataResponse(int responseError) {
+            this.status = responseError;
+            this.body = ConvertUtils.toJson(new Body(responseError, ""));
+        }
+
+        public boolean is201() {
+            return this.status == ServerConstants.STATUS_201;
+        }
+
+        class Body {
+            int code;
+            String message;
+
+            public Body(int code, String message) {
+                this.code = code;
+                this.message = message;
+            }
+        }
+
         private int status;
         private String body;
 
@@ -83,7 +103,7 @@ public class ClientUtils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return new JsonParser().parse("{\"ErrorCode\":0, \"Descirption\":\"\"}").getAsJsonObject();
+            return ConvertUtils.toJsonObject(ConvertUtils.toJson(new DataResponse.Body(ServerConstants.RESPONSE_ERROR, "")));
         }
 
         public boolean isOK() {
@@ -170,7 +190,7 @@ public class ClientUtils {
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
-        return new DataResponse(404, "{\"ErrorCode\":0, \"Descirption\":\"\"}");
+        return new DataResponse(ServerConstants.RESPONSE_ERROR);
     }
 
     public static DataResponse postData(String method, RequestBody formBody, int timeOut) throws SocketTimeoutException, UnknownHostException {
@@ -206,7 +226,7 @@ public class ClientUtils {
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
-        return new DataResponse(ServerConstants.RESPONSE_ERROR, "{\"ErrorCode\":0, \"Descirption\":\"\"}");
+        return new DataResponse(ServerConstants.RESPONSE_ERROR);
     }
 
     public static DataResponse postData(String method, String json, int timeOut) throws SocketTimeoutException, UnknownHostException {
@@ -246,7 +266,7 @@ public class ClientUtils {
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
-        return new DataResponse(ServerConstants.RESPONSE_ERROR, "{\"ErrorCode\":0, \"Descirption\":\"\"}");
+        return new DataResponse(ServerConstants.RESPONSE_ERROR);
     }
 
     public static DataResponse postData(Request request, int timeOut) throws SocketTimeoutException, UnknownHostException {
@@ -265,6 +285,6 @@ public class ClientUtils {
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
-        return new DataResponse(ServerConstants.RESPONSE_ERROR, "{\"ErrorCode\":0, \"Descirption\":\"\"}");
+        return new DataResponse(ServerConstants.RESPONSE_ERROR);
     }
 }
