@@ -44,13 +44,14 @@
     <string name="common_female">Female</string>
     <string name="common_save">SAVE</string>
     <string name="common_cob">Country Of Birth</string>
-    <string name="text33">Pending Verification!</string>
-    <string name="text34">We could not find your details in our database. For security reasons, please bring your photo ID (IC or Passport) to any BKK counters to verify you account!</string>
-    <string name="text35">OK</string>
+    <string name="common_pending_warning">Pending Verification!</string>
+    <string name="common_pending_warning_content">We could not find your details in our database. For security reasons, please bring your photo ID (IC or Passport) to any BKK counters to verify you account!</string>
+    <string name="common_ok">OK</string>
     <string name="dialog_send_verification_code_title">Resend verification code</string>
     <string name="dialog_send_verification_code_msg">SMS message delivery may take up to 5 minutes. Are you sure to get a new verification code (old verification code will be invalidated immediately)?</string>
     <string name="common_cancel">CANCEL</string>
     <string name="common_msg_check_connectivity">Vui lòng kiểm tra lại kết nối mạng</string>
     <string name="common_msg_retry">Thử lại</string>
     <string name="common_msg_connection_error">Lỗi kết nối</string>
+    <string name="common_bkk_forex">BKK Forex</string>
 </resources>

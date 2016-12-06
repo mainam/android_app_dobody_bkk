@@ -9,13 +9,15 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_send_verification_code_title"
             android:textColor="@color/tim"
+            android:textSize="15sp"
+
             android:textStyle="bold" />
 
         <TextView
@@ -23,26 +25,30 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/dialog_send_verification_code_msg"
-            android:textColor="@color/xam" />
+            android:textColor="@color/xam"
+            android:textSize="15sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="right">
-            <Button
-                android:background="@color/tim"
-                android:layout_width="wrap_content"
-                android:text="@string/common_cancel"
-                android:layout_height="wrap_content" />
 
             <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@color/tim"
+                android:text="@string/common_cancel" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:id="@+id/btnResend"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:background="@color/white"
-                android:textColor="@color/red"
-                android:layout_width="wrap_content"
                 android:text="@string/common_resend"
-                android:layout_height="wrap_content" />
+                android:textColor="@color/red" />
 
         </LinearLayout>
     </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -43,6 +44,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         txtID = (EditText) findViewById(R.id.txtId);
         txtMobile = (EditText) findViewById(R.id.txtMobile);
         txtUserName = (EditText) findViewById(R.id.txtUserName);
@@ -92,8 +95,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                 finish();
                 break;
             case R.id.btnRegister:
-                if(!txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString()))
-                {
+                if (!txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())) {
                     txtConfirmPassword.setError(getResources().getString(R.string.common_unmatched_password));
                     txtConfirmPassword.requestFocus();
                     return;
@@ -119,7 +121,11 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                     @Override
                     public void run() {
                         if (aVoid != null && aVoid.is201()) {
-                            UserProfileActivity.open(getActivity());
+                            JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
+                            JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            jsonObject1.addProperty("username", username);
+                            UserInfo.setCurrentUser(getActivity(), jsonObject);
+                            UserProfileActivity.open(getActivity(), id);
                             finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());

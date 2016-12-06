@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -41,6 +42,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         // Set up the login form.
         txtUserName = (EditText) findViewById(R.id.txtUserName);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
@@ -81,7 +84,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     @Override
                     public void run() {
                         if (aVoid != null && aVoid.is201()) {
-                            UserProfileActivity.open(getActivity());
+                            JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
+                            JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            jsonObject1.addProperty("username", username);
+                            UserInfo.setCurrentUser(getActivity(), jsonObject);
+                            UserProfileActivity.open(getActivity(),"");
                             finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());

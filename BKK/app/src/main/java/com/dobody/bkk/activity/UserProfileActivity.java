@@ -1,18 +1,26 @@
 package com.dobody.bkk.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dobody.bkk.BaseActivity;
 import com.dobody.bkk.R;
+import com.dobody.bkk.constant.Constants;
 import com.dobody.bkk.dataaccess.UserInfo;
 import com.dobody.bkk.utils.ClientUtils;
 import com.dobody.bkk.utils.ConvertUtils;
@@ -20,6 +28,7 @@ import com.google.gson.JsonObject;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 
 /**
  * A login screen that offers login via email/password.
@@ -28,112 +37,104 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     private EditText txtID;
     private EditText txtFirstName;
     private EditText txtLastName;
-    private EditText txtPassword;
-    private EditText txtConfirmPassword;
-    private View btnRegister;
-    private View ivLoading;
-    private TextView tvErrorMessage;
+    private EditText txtDocumentValidityDate;
+    private EditText txtDocumentType;
+    private EditText txtEmail;
+    private EditText txtAddress;
+    private EditText txtDateOfBirth;
+    private EditText txtCOB;
+    private RadioButton rdMale;
+    private View btnSave;
+    Calendar dtValidityDate = Calendar.getInstance();
+    Calendar dtDOB = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         txtID = (EditText) findViewById(R.id.txtId);
-        txtFirstName = (EditText) findViewById(R.id.txtMobile);
-        txtLastName = (EditText) findViewById(R.id.txtUserName);
-        txtPassword = (EditText) findViewById(R.id.txtPassword);
-        txtConfirmPassword = (EditText) findViewById(R.id.txtConfirmPassword);
-        btnRegister = findViewById(R.id.btnRegister);
-        ivLoading = findViewById(R.id.ivProcessLoading);
-        tvErrorMessage = (TextView) findViewById(R.id.tvErrorMessage);
-        findViewById(R.id.btnLogin).setOnClickListener(this);
-        txtConfirmPassword.addTextChangedListener(textWatcher);
-        txtPassword.addTextChangedListener(textWatcher);
+        txtID.setEnabled(false);
+        txtFirstName = (EditText) findViewById(R.id.txtFirstName);
+        txtLastName = (EditText) findViewById(R.id.txtLastName);
+        txtDocumentValidityDate = (EditText) findViewById(R.id.txtDocumentValidityDate);
+        txtDocumentType = (EditText) findViewById(R.id.txtDocumentType);
+        txtEmail = (EditText) findViewById(R.id.txtEmail);
+        txtAddress = (EditText) findViewById(R.id.txtAddress);
+        txtDateOfBirth = (EditText) findViewById(R.id.txtDateOfBirth);
+        rdMale = (RadioButton) findViewById(R.id.rdMale);
+        txtCOB = (EditText) findViewById(R.id.txtCOB);
+        btnSave = findViewById(R.id.btnSave);
+
+        txtDocumentValidityDate.setOnClickListener(this);
+        txtDateOfBirth.setOnClickListener(this);
+        findViewById(R.id.btnWarning).setOnClickListener(this);
+
+        String id = getIntent().getStringExtra(Constants.DATA_ID);
+        if (id != null)
+            txtID.setText(id);
     }
-    TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        }
+    DatePickerDialog.OnDateSetListener dateValidity = new DatePickerDialog.OnDateSetListener() {
 
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            dtValidityDate.set(Calendar.YEAR, year);
+            dtValidityDate.set(Calendar.MONTH, monthOfYear);
+            dtValidityDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            txtDocumentValidityDate.setText(ConvertUtils.toDateString(dtValidityDate.getTime().getTime(), "dd-MM-yyyy"));
         }
 
-        @Override
-        public void afterTextChanged(Editable editable) {
-            if(txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString()))
-            {
-                txtConfirmPassword.setError(null);
-            }
-            else
-            {
-                txtConfirmPassword.setError(getResources().getString(R.string.common_unmatched_password));
-            }
-        }
     };
 
+    DatePickerDialog.OnDateSetListener dateDOB = new DatePickerDialog.OnDateSetListener() {
 
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            dtDOB.set(Calendar.YEAR, year);
+            dtDOB.set(Calendar.MONTH, monthOfYear);
+            dtDOB.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            txtDateOfBirth.setText(ConvertUtils.toDateString(dtDOB.getTime().getTime(), "dd-MM-yyyy"));
+        }
 
+    };
 
-    public static void open(Context context) {
-        context.startActivity(new Intent(context, UserProfileActivity.class));
+    public static void open(Context context, String id) {
+        Intent intent = new Intent(context, UserProfileActivity.class);
+        intent.putExtra(Constants.DATA_ID, id);
+        context.startActivity(intent);
     }
 
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnLogin:
-                LoginActivity.open(getActivity());
+            case R.id.btnWarning:
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(R.layout.dialog_warning).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        VerificationActivity.open(getActivity());
+                    }
+                }).create();
+                alertDialog.show();
                 break;
-            case R.id.btnRegister:
+            case R.id.txtDateOfBirth:
+                new DatePickerDialog(getActivity(), dateDOB, dtDOB
+                        .get(Calendar.YEAR), dtDOB.get(Calendar.MONTH),
+                        dtDOB.get(Calendar.DAY_OF_MONTH)).show();
+                break;
+            case R.id.txtDocumentValidityDate:
+                new DatePickerDialog(getActivity(), dateValidity, dtValidityDate
+                        .get(Calendar.YEAR), dtValidityDate.get(Calendar.MONTH),
+                        dtValidityDate.get(Calendar.DAY_OF_MONTH)).show();
+                break;
+            case R.id.btnSave:
                 break;
         }
     }
-
-    private void register(final String id, final String username, final String mobile, final String password) {
-            new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
-                @Override
-                protected void onPreExecute() {
-                    btnRegister.setEnabled(false);
-                    ivLoading.setVisibility(View.VISIBLE);
-                    tvErrorMessage.setVisibility(View.GONE);
-                    super.onPreExecute();
-                }
-
-                @Override
-                protected void onPostExecute(final ClientUtils.DataResponse aVoid) {
-                    getHandler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (aVoid != null && aVoid.is201()) {
-
-                            } else {
-                                JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                                tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
-                                tvErrorMessage.setVisibility(View.VISIBLE);
-                            }
-                            btnRegister.setEnabled(true);
-                            ivLoading.setVisibility(View.GONE);
-                        }
-                    }, 1000);
-                    super.onPostExecute(aVoid);
-
-                }
-
-                @Override
-                protected ClientUtils.DataResponse doInBackground(Void... voids) {
-                    try {
-                        return UserInfo.register(id, username, mobile, password);
-                    } catch (SocketTimeoutException e) {
-                        e.printStackTrace();
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            }.execute();
-        }}
-
+}
