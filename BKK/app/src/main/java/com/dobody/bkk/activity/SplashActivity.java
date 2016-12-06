@@ -1,15 +1,12 @@
 package com.dobody.bkk.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -26,62 +23,50 @@ import java.net.UnknownHostException;
 /**
  * A login screen that offers login via email/password.
  */
-public class VerificationActivity extends BaseActivity implements View.OnClickListener {
-    private View btnVerify;
+public class SplashActivity extends BaseActivity implements OnClickListener {
+
+    // UI references.
+    private EditText txtUserName;
+    private EditText txtPassword;
+    private View btnLogin;
     private View ivLoading;
     private TextView tvErrorMessage;
-    private EditText txtCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verification);
+        setContentView(R.layout.activity_splash);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        findViewById(R.id.btnResend).setOnClickListener(this);
-        btnVerify = findViewById(R.id.btnVerify);
-        btnVerify.setOnClickListener(this);
+        // Set up the login form.
+        txtUserName = (EditText) findViewById(R.id.txtUserName);
+        txtPassword = (EditText) findViewById(R.id.txtPassword);
         ivLoading = findViewById(R.id.ivProcessLoading);
         tvErrorMessage = (TextView) findViewById(R.id.tvErrorMessage);
-        txtCode = (EditText)findViewById(R.id.txtVerificationCode);
-
-    }
-
-    public static void open(AppCompatActivity activity) {
-        activity.startActivity(new Intent(activity, VerificationActivity.class));
+        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(this);
+        findViewById(R.id.btnRegister).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnResend:
-                View v = getLayoutInflater().inflate(R.layout.dialog_resend_verification_code, null, false);
-                final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).create();
-                alertDialog.show();
-                v.findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        alertDialog.dismiss();
-                    }
-                });
-                v.findViewById(R.id.btnResend).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        alertDialog.dismiss();
-                    }
-                });
-            case R.id.btnVerify:
-                verify(txtCode.getText().toString());
+            case R.id.btnLogin:
+                login(txtUserName.getText().toString(), txtPassword.getText().toString());
+                break;
+            case R.id.btnRegister:
+                RegisterActivity.open(getActivity());
+                finish();
                 break;
         }
     }
 
 
-    private void verify(final String code) {
+    private void login(final String username, final String password) {
         new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
             protected void onPreExecute() {
-                btnVerify.setEnabled(false);
+                btnLogin.setEnabled(false);
                 ivLoading.setVisibility(View.VISIBLE);
                 tvErrorMessage.setVisibility(View.GONE);
                 super.onPreExecute();
@@ -92,15 +77,19 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 getHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (aVoid != null && aVoid.is200()) {
-                            btnVerify.setEnabled(true);
-                            ivLoading.setVisibility(View.GONE);
+                        if (aVoid != null && aVoid.is201()) {
+                            JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
+                            JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            jsonObject1.addProperty("username", username);
+                            UserInfo.setCurrentUser(getActivity(), jsonObject);
+                            UserProfileActivity.open(getActivity(),"");
+                            finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
                             tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
                             tvErrorMessage.setVisibility(View.VISIBLE);
                         }
-                        btnVerify.setEnabled(true);
+                        btnLogin.setEnabled(true);
                         ivLoading.setVisibility(View.GONE);
                     }
                 }, 1000);
@@ -111,7 +100,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             @Override
             protected ClientUtils.DataResponse doInBackground(Void... voids) {
                 try {
-                    return UserInfo.verify(UserInfo.getUsername(), UserInfo.getToken(), code);
+                    return UserInfo.login(username, password);
                 } catch (SocketTimeoutException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {
@@ -120,6 +109,10 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 return null;
             }
         }.execute();
+    }
+
+    public static void open(AppCompatActivity activity) {
+        activity.startActivity(new Intent(activity, SplashActivity.class));
     }
 }
 

@@ -84,6 +84,10 @@ public class ClientUtils {
             return this.status == ServerConstants.STATUS_201;
         }
 
+        public boolean is200() {
+            return this.status == ServerConstants.RESPONSE_OK;
+        }
+
         class Body {
             int code;
             String message;

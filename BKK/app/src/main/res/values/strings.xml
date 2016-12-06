@@ -19,7 +19,7 @@
     <string name="common_resend">RESEND</string>
     <string name="common_verification">VERIFICATION</string>
     <string name="common_msg_error_verification_code_invalid">Your verification code is not valid!</string>
-    <string name="text7">MONEY REMITTANCE</string>
+    <string name="common_money_remittance">MONEY REMITTANCE</string>
     <string name="text8">Username</string>
     <string name="text9">Password</string>
     <string name="common_login">LOGIN</string>
