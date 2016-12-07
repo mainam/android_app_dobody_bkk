@@ -1,12 +1,15 @@
 package com.dobody.bkk.activity;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import com.dobody.bkk.BaseActivity;
 import com.dobody.bkk.R;
+import com.dobody.bkk.adapter.BaseRecyclerAdapter;
 import com.dobody.bkk.constant.Constants;
 import com.dobody.bkk.dataaccess.UserInfo;
 import com.dobody.bkk.utils.ClientUtils;
@@ -65,6 +69,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         txtDateOfBirth = (EditText) findViewById(R.id.txtDateOfBirth);
         rdMale = (RadioButton) findViewById(R.id.rdMale);
         txtCOB = (EditText) findViewById(R.id.txtCOB);
+        txtCOB.setOnClickListener(this);
         btnSave = findViewById(R.id.btnSave);
 
         txtDocumentValidityDate.setOnClickListener(this);
@@ -110,10 +115,44 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         context.startActivity(intent);
     }
 
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvName;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            tvName = (TextView) itemView.findViewById(R.id.tvName);
+        }
+    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.txtCOB:
+                View view1 = getLayoutInflater().inflate(R.layout.dialog_select_country, null, false);
+                RecyclerView recyclerView = (RecyclerView) view1.findViewById(R.id.recyclerView);
+                final Dialog dialog = new AlertDialog.Builder(getActivity()).setView(view1).create();
+                dialog.show();
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                new BaseRecyclerAdapter<ViewHolder, String>(R.layout.item_list_country, new BaseRecyclerAdapter.BaseViewHolder<ViewHolder, String>() {
+                    @Override
+                    public ViewHolder getViewHolder(View v) {
+                        return new ViewHolder(v);
+                    }
+
+                    @Override
+                    public void bindData(ViewHolder viewHolder, String data, int position) {
+                        viewHolder.tvName.setText(data);
+                    }
+                }, ConvertUtils.toArrayList(String.class, "Vietnam", "Singapor", "Thailand", "Laos", "Korea"), new BaseRecyclerAdapter.OnClickListener() {
+                    @Override
+                    public void onClick(View v, int position, Object o) {
+                        txtCOB.setText(o.toString());
+                        dialog.dismiss();
+                    }
+                }).bindData(recyclerView);
+
+
+                break;
             case R.id.btnWarning:
                 AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(R.layout.dialog_warning).setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
                     @Override
