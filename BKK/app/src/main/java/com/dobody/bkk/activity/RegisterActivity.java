@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -39,6 +40,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
     private View btnRegister;
     private View ivLoading;
     private TextView tvErrorMessage;
+    private TextInputLayout tlConfirmPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
         tvErrorMessage = (TextView) findViewById(R.id.tvErrorMessage);
         findViewById(R.id.btnLogin).setOnClickListener(this);
         txtConfirmPassword.addTextChangedListener(textWatcher);
+        tlConfirmPassword = (TextInputLayout) findViewById(R.id.tlConfirmPassword);
         txtPassword.addTextChangedListener(textWatcher);
     }
 
@@ -74,9 +77,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
         @Override
         public void afterTextChanged(Editable editable) {
             if (txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())) {
-                txtConfirmPassword.setError(null);
+                tlConfirmPassword.setError(null);
             } else {
-                txtConfirmPassword.setError(getResources().getString(R.string.common_unmatched_password));
+                tlConfirmPassword.setError(getResources().getString(R.string.common_unmatched_password));
+                tlConfirmPassword.setErrorEnabled(true);
             }
         }
     };
