@@ -29,6 +29,7 @@ import java.net.UnknownHostException;
 public class VerificationActivity extends BaseActivity implements View.OnClickListener {
     private View btnVerify;
     private View ivLoading;
+    private View ivDone;
     private TextView tvErrorMessage;
     private EditText txtCode;
 
@@ -42,8 +43,9 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         btnVerify = findViewById(R.id.btnVerify);
         btnVerify.setOnClickListener(this);
         ivLoading = findViewById(R.id.ivProcessLoading);
+        ivDone = findViewById(R.id.ivDone);
         tvErrorMessage = (TextView) findViewById(R.id.tvErrorMessage);
-        txtCode = (EditText)findViewById(R.id.txtVerificationCode);
+        txtCode = (EditText) findViewById(R.id.txtVerificationCode);
 
     }
 
@@ -67,6 +69,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                 v.findViewById(R.id.btnResend).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        resend();
                         alertDialog.dismiss();
                     }
                 });
@@ -83,6 +86,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             protected void onPreExecute() {
                 btnVerify.setEnabled(false);
                 ivLoading.setVisibility(View.VISIBLE);
+                ivDone.setVisibility(View.GONE);
                 tvErrorMessage.setVisibility(View.GONE);
                 super.onPreExecute();
             }
@@ -95,6 +99,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                         if (aVoid != null && aVoid.is200()) {
                             btnVerify.setEnabled(true);
                             ivLoading.setVisibility(View.GONE);
+                            ivDone.setVisibility(View.GONE);
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
                             tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
@@ -112,6 +117,53 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             protected ClientUtils.DataResponse doInBackground(Void... voids) {
                 try {
                     return UserInfo.verify(UserInfo.getToken(), code);
+                } catch (SocketTimeoutException e) {
+                    e.printStackTrace();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+    private void resend() {
+        new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
+            @Override
+            protected void onPreExecute() {
+                btnVerify.setEnabled(false);
+                ivLoading.setVisibility(View.VISIBLE);
+                ivDone.setVisibility(View.GONE);
+                tvErrorMessage.setVisibility(View.GONE);
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(final ClientUtils.DataResponse aVoid) {
+                getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (aVoid != null && aVoid.is200()) {
+                            btnVerify.setEnabled(true);
+                            ivLoading.setVisibility(View.GONE);
+                            ivDone.setVisibility(View.VISIBLE);
+                        } else {
+                            JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
+                            tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
+                            tvErrorMessage.setVisibility(View.VISIBLE);
+                        }
+                        btnVerify.setEnabled(true);
+                        ivLoading.setVisibility(View.GONE);
+                    }
+                }, 1000);
+                super.onPostExecute(aVoid);
+
+            }
+
+            @Override
+            protected ClientUtils.DataResponse doInBackground(Void... voids) {
+                try {
+                    return UserInfo.resend(UserInfo.getToken());
                 } catch (SocketTimeoutException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {

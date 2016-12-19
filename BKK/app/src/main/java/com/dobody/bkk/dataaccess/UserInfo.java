@@ -87,6 +87,20 @@ public class UserInfo {
         }
     }
 
+    public static ClientUtils.DataResponse resend(String token) throws SocketTimeoutException, UnknownHostException {
+        try {
+            return ClientUtils.postData(ServerConstants.API_RESEND, token, new JSONObject()
+                    , TimeoutConstants.TIMEOUT_DEFAULT);
+        } catch (SocketTimeoutException e) {
+            throw e;
+        } catch (UnknownHostException e) {
+            throw e;
+        } catch (Exception e) {
+            return new ClientUtils.DataResponse(ServerConstants.RESPONSE_ERROR);
+
+        }
+    }
+
     public static boolean isLogin() {
         return currentUser != null;
     }

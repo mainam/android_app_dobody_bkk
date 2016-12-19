@@ -14,6 +14,7 @@ public class ServerConstants {
     public static final String API_REGISTER= "users";
     public static final int STATUS_201 = 201;
     public static final String API_VERIFY = "users/verify";
+    public static final String API_RESEND = "users/resend";
 
 //    public static String getServerLink() {
 //        return "http://zeitmedia.vn/forexapi/public/";

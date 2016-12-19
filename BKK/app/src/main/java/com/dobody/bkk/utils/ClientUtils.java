@@ -364,7 +364,7 @@ public class ClientUtils {
                 json);
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authentication", "Bearer " + token)
+                .addHeader("Authorization", "Bearer " + token)
                 .post(body)
                 .build();
         Response response = null;
