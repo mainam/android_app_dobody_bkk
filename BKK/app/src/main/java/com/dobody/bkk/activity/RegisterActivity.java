@@ -41,6 +41,9 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
     private View ivLoading;
     private TextView tvErrorMessage;
     private TextInputLayout tlConfirmPassword;
+    private TextInputLayout tlPassword;
+    private TextInputLayout tlMobile;
+    private TextInputLayout tlUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,9 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
         findViewById(R.id.btnLogin).setOnClickListener(this);
         txtConfirmPassword.addTextChangedListener(textWatcher);
         tlConfirmPassword = (TextInputLayout) findViewById(R.id.tlConfirmPassword);
+        tlPassword = (TextInputLayout) findViewById(R.id.tlPassword);
+        tlMobile = (TextInputLayout) findViewById(R.id.tlMobile);
+        tlUserName = (TextInputLayout) findViewById(R.id.tlUserName);
         txtPassword.addTextChangedListener(textWatcher);
     }
 
@@ -99,17 +105,12 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                 finish();
                 break;
             case R.id.btnRegister:
-                if (!txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())) {
-                    txtConfirmPassword.setError(getResources().getString(R.string.common_unmatched_password));
-                    txtConfirmPassword.requestFocus();
-                    return;
-                }
-                register(txtID.getText().toString(), txtUserName.getText().toString(), txtMobile.getText().toString(), txtPassword.getText().toString());
+                register(txtID.getText().toString(), txtUserName.getText().toString(), txtMobile.getText().toString(), txtPassword.getText().toString(), txtConfirmPassword.getText().toString());
                 break;
         }
     }
 
-    private void register(final String id, final String username, final String mobile, final String password) {
+    private void register(final String id, final String username, final String mobile, final String password, final String confirmPassword) {
         new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
             protected void onPreExecute() {
@@ -133,8 +134,27 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                             finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
-                            tvErrorMessage.setVisibility(View.VISIBLE);
+                            jsonObject = ConvertUtils.toJsonObject(jsonObject.get("Data"));
+                            if(jsonObject.has("username"))
+                            {
+                                tlUserName.setError(ConvertUtils.toString(jsonObject.get("username")));
+                                tlUserName.setErrorEnabled(true);
+                            }
+                            if(jsonObject.has("password"))
+                            {
+                                tlPassword.setError(ConvertUtils.toString(jsonObject.get("password")));
+                                tlPassword.setErrorEnabled(true);
+                            }
+                            if(jsonObject.has("password_confirm"))
+                            {
+                                tlConfirmPassword.setError(ConvertUtils.toString(jsonObject.get("password_confirm")));
+                                tlConfirmPassword.setErrorEnabled(true);
+                            }
+                            if(jsonObject.has("mobile"))
+                            {
+                                tlMobile.setError(ConvertUtils.toString(jsonObject.get("mobile")));
+                                tlMobile.setErrorEnabled(true);
+                            }
                         }
                         btnRegister.setEnabled(true);
                         ivLoading.setVisibility(View.GONE);
@@ -147,7 +167,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
             @Override
             protected ClientUtils.DataResponse doInBackground(Void... voids) {
                 try {
-                    return UserInfo.register(id, username, mobile, password);
+                    return UserInfo.register(id, username, mobile, password,confirmPassword);
                 } catch (SocketTimeoutException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {

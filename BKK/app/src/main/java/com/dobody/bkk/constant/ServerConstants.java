@@ -11,10 +11,14 @@ public class ServerConstants {
     public static final int RESPONSE_ERROR = 401;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final String API_LOGIN = "auth";
+    public static final String API_REGISTER= "users";
     public static final int STATUS_201 = 201;
     public static final String API_VERIFY = "otp";
 
+//    public static String getServerLink() {
+//        return "http://zeitmedia.vn/forexapi/public/";
+//    }
     public static String getServerLink() {
-        return "http://zeitmedia.vn/forexapi/public/";
+        return "https://103.11.140.83:8888/";
     }
 }

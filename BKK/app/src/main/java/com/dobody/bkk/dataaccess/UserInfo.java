@@ -51,28 +51,22 @@ public class UserInfo {
         }
     }
 
-    public static ClientUtils.DataResponse register(String id, String username, String mobile, String password) throws UnknownHostException, SocketTimeoutException {
+    public static ClientUtils.DataResponse register(String id, String username, String mobile, String password, String passwordConfirm) throws UnknownHostException, SocketTimeoutException {
         try {
-            return ClientUtils.postData(ServerConstants.API_LOGIN, new JSONObject()
-                            .put("nric", username)
+            return ClientUtils.postData(ServerConstants.API_REGISTER, new JSONObject()
+                            .put("document_id", id)
+                            .put("mobile", mobile)
+                            .put("username", username)
                             .put("password", password)
-                            .put("name", "test name")
-                            .put("phone", mobile)
-                            .put("email", "test@gmail.com")
-                            .put("dob", "12/11/2016")
-                            .put("gender", "nam")
-                            .put("passport", id)
-                            .put("nationality", "vietnam")
-                            .put("address", "tanh linh binh thuan")
-                            .put("loyalty", 1)
-                            .put("country", "vn")
-                            .put("status", 1)
+                            .put("password_confirm", passwordConfirm)
+                            .put("country", "VN")
                     , TimeoutConstants.TIMEOUT_DEFAULT);
         } catch (SocketTimeoutException e) {
             throw e;
         } catch (UnknownHostException e) {
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             return new ClientUtils.DataResponse(ServerConstants.RESPONSE_ERROR);
 
         }

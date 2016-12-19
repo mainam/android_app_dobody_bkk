@@ -10,6 +10,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
+import com.dobody.bkk.MainApplication;
+import com.dobody.bkk.R;
 import com.dobody.bkk.constant.Constants;
 import com.dobody.bkk.constant.ServerConstants;
 import com.google.gson.Gson;
@@ -33,15 +35,38 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.internal.framed.Header;
+import okio.Buffer;
 
 /**
  * Created by MaiNam on 11/30/2016.
@@ -53,24 +78,81 @@ public class ClientUtils {
     private static OkHttpClient client;
     private static int timeOut = 100;
 
+
     static OkHttpClient getClient() {
-        if (client == null)
-            client = new OkHttpClient.Builder()
+        if (client == null) {
+            OkHttpClient.Builder builder = new OkHttpClient.Builder().sslSocketFactory(getSocketFactory(MainApplication.getAppContext()))
                     .connectTimeout(timeOut, TimeUnit.SECONDS)
                     .readTimeout(timeOut, TimeUnit.SECONDS)
-                    .writeTimeout(timeOut, TimeUnit.SECONDS)
-                    .build();
+                    .writeTimeout(timeOut, TimeUnit.SECONDS);
+            builder.hostnameVerifier((new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            }));
+            client = builder.build();
+        }
         return client;
+
+    }
+
+    static SSLSocketFactory getSocketFactory(Context context) {
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream cert = context.getResources().openRawResource(R.raw.browser);
+            Certificate ca;
+            try {
+                ca = cf.generateCertificate(cert);
+            } finally {
+                cert.close();
+            }
+
+            // creating a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            // creating a TrustManager that trusts the CAs in our KeyStore
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+
+            // creating an SSLSocketFactory that uses our TrustManager
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, tmf.getTrustManagers(), null);
+            return sslContext.getSocketFactory();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
     static OkHttpClient getClient(int timeOut) {
         if (timeOut == 0)
             return getClient();
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder().sslSocketFactory(getSocketFactory(MainApplication.getAppContext()))
                 .connectTimeout(timeOut, TimeUnit.SECONDS)
                 .readTimeout(timeOut, TimeUnit.SECONDS)
-                .writeTimeout(timeOut, TimeUnit.SECONDS)
-                .build();
+                .writeTimeout(timeOut, TimeUnit.SECONDS);
+        builder.hostnameVerifier((new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        }));
+        return builder.build();
+
     }
 
 
@@ -248,11 +330,7 @@ public class ClientUtils {
         try {
             OkHttpClient client = null;
             if (timeOut != 0) {
-                client = new OkHttpClient.Builder()
-                        .connectTimeout(timeOut, TimeUnit.SECONDS)
-                        .readTimeout(timeOut, TimeUnit.SECONDS)
-                        .writeTimeout(timeOut, TimeUnit.SECONDS)
-                        .build();
+                client = getClient(timeOut);
             } else {
                 client = getClient();
             }
