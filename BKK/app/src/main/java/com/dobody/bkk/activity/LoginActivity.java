@@ -83,7 +83,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                 getHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (aVoid != null && aVoid.is201()) {
+                        if (aVoid != null && aVoid.is200()) {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
                             JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
                             jsonObject1.addProperty("username", username);

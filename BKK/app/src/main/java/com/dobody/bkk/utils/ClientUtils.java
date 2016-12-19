@@ -235,6 +235,10 @@ public class ClientUtils {
         return postData(method, json.toString(), timeOut);
     }
 
+    public static DataResponse postData(String method, String token, JSONObject json, int timeOut) throws SocketTimeoutException, UnknownHostException {
+        return postData(method, token, json.toString(), timeOut);
+    }
+
 
     public static DataResponse postData(String method, String json) throws SocketTimeoutException, UnknownHostException {
         return postData(method, json, 0);
@@ -324,6 +328,43 @@ public class ClientUtils {
                 json);
         Request request = new Request.Builder()
                 .url(url)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            OkHttpClient client = null;
+            if (timeOut != 0) {
+                client = getClient(timeOut);
+            } else {
+                client = getClient();
+            }
+
+            response = client.newCall(request).execute();
+            String bodyString = response.body().string();
+            Log.d(TAG, method + ": " + bodyString);
+            return new DataResponse(response.code(), bodyString);
+        } catch (SocketTimeoutException e) {
+            throw e;
+        } catch (UnknownHostException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+        }
+        return new DataResponse(ServerConstants.RESPONSE_ERROR);
+    }
+
+    public static DataResponse postData(String method, String token, String json, int timeOut) throws SocketTimeoutException, UnknownHostException {
+        RequestBody body = RequestBody.create(ServerConstants.JSON, json);
+        String url = ServerConstants.getServerLink() + method;
+        Log.d(TAG, "url " +
+                url);
+        Log.d(TAG, "data " +
+                json);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authentication", "Bearer " + token)
                 .post(body)
                 .build();
         Response response = null;

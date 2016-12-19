@@ -111,7 +111,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
             @Override
             protected ClientUtils.DataResponse doInBackground(Void... voids) {
                 try {
-                    return UserInfo.verify(UserInfo.getUsername(), UserInfo.getToken(), code);
+                    return UserInfo.verify(UserInfo.getToken(), code);
                 } catch (SocketTimeoutException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {

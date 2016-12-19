@@ -40,7 +40,7 @@ public class UserInfo {
 
     public static ClientUtils.DataResponse login(String username, String password) throws SocketTimeoutException, UnknownHostException {
         try {
-            return ClientUtils.postData(ServerConstants.API_LOGIN, new JSONObject().put("nric", username).put("password", password), TimeoutConstants.TIMEOUT_DEFAULT);
+            return ClientUtils.postData(ServerConstants.API_LOGIN, new JSONObject().put("username", username).put("password", password), TimeoutConstants.TIMEOUT_DEFAULT);
         } catch (SocketTimeoutException e) {
             throw e;
         } catch (UnknownHostException e) {
@@ -72,11 +72,9 @@ public class UserInfo {
         }
     }
 
-    public static ClientUtils.DataResponse verify(String username, String token, String otp) throws SocketTimeoutException, UnknownHostException {
+    public static ClientUtils.DataResponse verify(String token, String otp) throws SocketTimeoutException, UnknownHostException {
         try {
-            return ClientUtils.postData(ServerConstants.API_VERIFY, new JSONObject()
-                            .put("nric", username)
-                            .put("token", token)
+            return ClientUtils.postData(ServerConstants.API_VERIFY, token, new JSONObject()
                             .put("otp", otp)
                     , TimeoutConstants.TIMEOUT_DEFAULT);
         } catch (SocketTimeoutException e) {

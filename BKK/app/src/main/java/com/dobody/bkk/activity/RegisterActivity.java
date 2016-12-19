@@ -105,6 +105,16 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                 finish();
                 break;
             case R.id.btnRegister:
+                tlMobile.setError(null);
+                tlPassword.setError(null);
+                tlConfirmPassword.setError(null);
+                tlUserName.setError(null);
+                if(!txtConfirmPassword.getText().toString().equals(txtPassword.getText().toString()))
+                {
+                    tlConfirmPassword.setError(getResources().getString(R.string.common_unmatched_password));
+                    tlConfirmPassword.setErrorEnabled(true);
+                    return;
+                }
                 register(txtID.getText().toString(), txtUserName.getText().toString(), txtMobile.getText().toString(), txtPassword.getText().toString(), txtConfirmPassword.getText().toString());
                 break;
         }
@@ -134,7 +144,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                             finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            jsonObject = ConvertUtils.toJsonObject(jsonObject.get("Data"));
+                            jsonObject = ConvertUtils.toJsonObject(jsonObject.get("data"));
                             if(jsonObject.has("username"))
                             {
                                 tlUserName.setError(ConvertUtils.toString(jsonObject.get("username")));
