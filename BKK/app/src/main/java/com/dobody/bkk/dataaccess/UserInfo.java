@@ -119,10 +119,10 @@ public class UserInfo {
         return ConvertUtils.toString(jsonObject.get("access_token"));
     }
 
-    public static ClientUtils.DataResponse updateProfile(String token, String firstName, String lastName, String documentType, String documentExpiry, String email, String phone, String address, String dob, String gender, String country_of_birth) throws UnknownHostException, SocketTimeoutException {
+    public static ClientUtils.DataResponse updateProfile(String id, String token, String firstName, String lastName, String documentType, String documentExpiry, String email, String phone, String address, String dob, String gender, String country_of_birth) throws UnknownHostException, SocketTimeoutException {
 
         try {
-            return ClientUtils.postData(ServerConstants.API_UPDATE_PROFILE, token, new JSONObject()
+            return ClientUtils.patchData(ServerConstants.API_UPDATE_PROFILE+id, token, new JSONObject()
                     .put("first_name",firstName)
                     .put("last_name",lastName)
                     .put("document_type",documentType)

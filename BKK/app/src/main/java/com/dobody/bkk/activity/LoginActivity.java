@@ -85,10 +85,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     public void run() {
                         if (aVoid != null && aVoid.is200()) {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
-                            jsonObject1.addProperty("username", username);
                             UserInfo.setCurrentUser(getActivity(), jsonObject);
-                            UserProfileActivity.open(getActivity(),"");
+                            UserProfileActivity.open(getActivity(), "", jsonObject.toString());
                             finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());

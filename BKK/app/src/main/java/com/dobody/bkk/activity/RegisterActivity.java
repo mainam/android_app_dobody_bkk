@@ -109,8 +109,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                 tlPassword.setError(null);
                 tlConfirmPassword.setError(null);
                 tlUserName.setError(null);
-                if(!txtConfirmPassword.getText().toString().equals(txtPassword.getText().toString()))
-                {
+                if (!txtConfirmPassword.getText().toString().equals(txtPassword.getText().toString())) {
                     tlConfirmPassword.setError(getResources().getString(R.string.common_unmatched_password));
                     tlConfirmPassword.setErrorEnabled(true);
                     return;
@@ -137,31 +136,25 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                     public void run() {
                         if (aVoid != null && aVoid.is201()) {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
-                            jsonObject1.addProperty("username", username);
                             UserInfo.setCurrentUser(getActivity(), jsonObject);
-                            UserProfileActivity.open(getActivity(), id);
+                            UserProfileActivity.open(getActivity(), id, jsonObject.toString());
                             finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
                             jsonObject = ConvertUtils.toJsonObject(jsonObject.get("data"));
-                            if(jsonObject.has("username"))
-                            {
+                            if (jsonObject.has("username")) {
                                 tlUserName.setError(ConvertUtils.toString(jsonObject.get("username")));
                                 tlUserName.setErrorEnabled(true);
                             }
-                            if(jsonObject.has("password"))
-                            {
+                            if (jsonObject.has("password")) {
                                 tlPassword.setError(ConvertUtils.toString(jsonObject.get("password")));
                                 tlPassword.setErrorEnabled(true);
                             }
-                            if(jsonObject.has("password_confirm"))
-                            {
+                            if (jsonObject.has("password_confirm")) {
                                 tlConfirmPassword.setError(ConvertUtils.toString(jsonObject.get("password_confirm")));
                                 tlConfirmPassword.setErrorEnabled(true);
                             }
-                            if(jsonObject.has("mobile"))
-                            {
+                            if (jsonObject.has("mobile")) {
                                 tlMobile.setError(ConvertUtils.toString(jsonObject.get("mobile")));
                                 tlMobile.setErrorEnabled(true);
                             }
@@ -177,7 +170,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
             @Override
             protected ClientUtils.DataResponse doInBackground(Void... voids) {
                 try {
-                    return UserInfo.register(id, username, mobile, password,confirmPassword);
+                    return UserInfo.register(id, username, mobile, password, confirmPassword);
                 } catch (SocketTimeoutException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {

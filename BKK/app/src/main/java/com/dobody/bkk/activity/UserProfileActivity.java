@@ -33,6 +33,7 @@ import com.google.gson.JsonObject;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * A login screen that offers login via email/password.
@@ -51,7 +52,9 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     private View btnSave;
     Calendar dtValidityDate = Calendar.getInstance();
     Calendar dtDOB = Calendar.getInstance();
-//    private View ivLoading;
+    //    private View ivLoading;
+    JsonObject jsonObject;
+    private View btnWarning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         setContentView(R.layout.activity_user_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        jsonObject = ConvertUtils.toJsonObject(getIntent().getStringExtra(Constants.DATA_DATA));
         txtID = (EditText) findViewById(R.id.txtId);
         txtID.setEnabled(false);
         txtFirstName = (EditText) findViewById(R.id.txtFirstName);
@@ -75,7 +79,13 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
         txtDocumentValidityDate.setOnClickListener(this);
         txtDateOfBirth.setOnClickListener(this);
-        findViewById(R.id.btnWarning).setOnClickListener(this);
+        btnWarning = findViewById(R.id.btnWarning);
+        if (ConvertUtils.toString(ConvertUtils.toJsonObject(ConvertUtils.toJsonObject(jsonObject.get("data")).get("user")).get("status")).equals("VERIFYING")) {
+            btnWarning.setVisibility(View.VISIBLE);
+            btnWarning.setOnClickListener(this);
+        } else {
+            btnWarning.setVisibility(View.GONE);
+        }
 
         String id = getIntent().getStringExtra(Constants.DATA_ID);
         if (id != null)
@@ -83,8 +93,15 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
 //        ivLoading = findViewById(R.id.ivProcessLoading);
         btnSave.setOnClickListener(this);
+        country.put("Vietnam", "VN");
+        country.put("Singapor", "SG");
+        country.put("Thailand", "TH");
+        country.put("Laos", "LA");
+        country.put("Korea", "KR");
 
     }
+
+    HashMap<String, String> country = new HashMap<String, String>();
 
     DatePickerDialog.OnDateSetListener dateValidity = new DatePickerDialog.OnDateSetListener() {
 
@@ -114,9 +131,10 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
     };
 
-    public static void open(Context context, String id) {
+    public static void open(Context context, String id, String data) {
         Intent intent = new Intent(context, UserProfileActivity.class);
         intent.putExtra(Constants.DATA_ID, id);
+        intent.putExtra(Constants.DATA_DATA, data);
         context.startActivity(intent);
     }
 
@@ -178,11 +196,14 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                         dtValidityDate.get(Calendar.DAY_OF_MONTH)).show();
                 break;
             case R.id.btnSave:
-                save(txtFirstName.getText().toString(),txtLastName.getText().toString(),txtDocumentType.getText().toString(),txtDocumentValidityDate.getText().toString(),txtEmail.getText().toString(),"",txtAddress.getText().toString(),txtDateOfBirth.getText().toString(),rdMale.isChecked()?"M":"F",txtCOB.getText().toString());
+                JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                jsonObject1 = ConvertUtils.toJsonObject(jsonObject1.get("user"));
+                save(ConvertUtils.toString(jsonObject1.get("id")), txtFirstName.getText().toString(), txtLastName.getText().toString(), txtDocumentType.getText().toString(), txtDocumentValidityDate.getText().toString(), txtEmail.getText().toString(), "", txtAddress.getText().toString(), txtDateOfBirth.getText().toString(), rdMale.isChecked() ? "M" : "F", country.get(txtCOB.getText().toString()));
                 break;
         }
     }
-    private void save(final String firstName, final String lastName, final String documentType, final String documentExpiry, final String email, final String phone, final String address, final String dob, final String gender, final String country_of_birth) {
+
+    private void save(final String id, final String firstName, final String lastName, final String documentType, final String documentExpiry, final String email, final String phone, final String address, final String dob, final String gender, final String country_of_birth) {
         new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
             protected void onPreExecute() {
@@ -201,7 +222,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                         if (aVoid != null && aVoid.is200()) {
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            jsonObject=ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            jsonObject = ConvertUtils.toJsonObject(jsonObject.get("data"));
                         }
                     }
                 }, 1000);
@@ -212,7 +233,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             @Override
             protected ClientUtils.DataResponse doInBackground(Void... voids) {
                 try {
-                    return UserInfo.updateProfile(UserInfo.getToken(), firstName,lastName,documentType,documentExpiry,email,phone,address,dob,gender,country_of_birth);
+                    return UserInfo.updateProfile(id, UserInfo.getToken(), firstName, lastName, documentType, documentExpiry, email, phone, address, dob, gender, country_of_birth);
                 } catch (SocketTimeoutException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {
