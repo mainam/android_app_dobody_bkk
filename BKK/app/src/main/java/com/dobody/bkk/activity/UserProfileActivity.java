@@ -51,6 +51,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     private View btnSave;
     Calendar dtValidityDate = Calendar.getInstance();
     Calendar dtDOB = Calendar.getInstance();
+//    private View ivLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,10 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         String id = getIntent().getStringExtra(Constants.DATA_ID);
         if (id != null)
             txtID.setText(id);
+
+//        ivLoading = findViewById(R.id.ivProcessLoading);
+        btnSave.setOnClickListener(this);
+
     }
 
     DatePickerDialog.OnDateSetListener dateValidity = new DatePickerDialog.OnDateSetListener() {
@@ -90,7 +95,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             dtValidityDate.set(Calendar.YEAR, year);
             dtValidityDate.set(Calendar.MONTH, monthOfYear);
             dtValidityDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            txtDocumentValidityDate.setText(ConvertUtils.toDateString(dtValidityDate.getTime().getTime(), "dd-MM-yyyy"));
+            txtDocumentValidityDate.setText(ConvertUtils.toDateString(dtValidityDate.getTime().getTime(), "yyyy-MM-dd"));
         }
 
     };
@@ -104,7 +109,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             dtDOB.set(Calendar.YEAR, year);
             dtDOB.set(Calendar.MONTH, monthOfYear);
             dtDOB.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            txtDateOfBirth.setText(ConvertUtils.toDateString(dtDOB.getTime().getTime(), "dd-MM-yyyy"));
+            txtDateOfBirth.setText(ConvertUtils.toDateString(dtDOB.getTime().getTime(), "yyyy-MM-dd"));
         }
 
     };
@@ -173,7 +178,48 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                         dtValidityDate.get(Calendar.DAY_OF_MONTH)).show();
                 break;
             case R.id.btnSave:
+                save(txtFirstName.getText().toString(),txtLastName.getText().toString(),txtDocumentType.getText().toString(),txtDocumentValidityDate.getText().toString(),txtEmail.getText().toString(),"",txtAddress.getText().toString(),txtDateOfBirth.getText().toString(),rdMale.isChecked()?"M":"F",txtCOB.getText().toString());
                 break;
         }
+    }
+    private void save(final String firstName, final String lastName, final String documentType, final String documentExpiry, final String email, final String phone, final String address, final String dob, final String gender, final String country_of_birth) {
+        new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
+            @Override
+            protected void onPreExecute() {
+                btnSave.setEnabled(false);
+//                ivLoading.setVisibility(View.VISIBLE);
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(final ClientUtils.DataResponse aVoid) {
+                getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        btnSave.setEnabled(true);
+//                        ivLoading.setVisibility(View.GONE);
+                        if (aVoid != null && aVoid.is200()) {
+                        } else {
+                            JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
+                            jsonObject=ConvertUtils.toJsonObject(jsonObject.get("data"));
+                        }
+                    }
+                }, 1000);
+                super.onPostExecute(aVoid);
+
+            }
+
+            @Override
+            protected ClientUtils.DataResponse doInBackground(Void... voids) {
+                try {
+                    return UserInfo.updateProfile(UserInfo.getToken(), firstName,lastName,documentType,documentExpiry,email,phone,address,dob,gender,country_of_birth);
+                } catch (SocketTimeoutException e) {
+                    e.printStackTrace();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
     }
 }

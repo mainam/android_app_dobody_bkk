@@ -102,7 +102,8 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                             ivDone.setVisibility(View.GONE);
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
+                            jsonObject=ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("error")));
                             tvErrorMessage.setVisibility(View.VISIBLE);
                         }
                         btnVerify.setEnabled(true);

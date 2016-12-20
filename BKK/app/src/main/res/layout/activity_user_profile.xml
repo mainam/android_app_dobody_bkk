@@ -61,10 +61,10 @@
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/login_form"
-        android:layout_below="@id/toolbar"
-        android:layout_above="@id/copyright"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/copyright"
+        android:layout_below="@id/toolbar"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:scrollbars="none">
@@ -280,6 +280,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@drawable/selector_radio_gender"
+                    android:checked="true"
                     android:padding="10dp"
                     android:text="@string/common_male"
                     android:textColor="@color/white" />
@@ -307,10 +308,10 @@
                     android:id="@+id/txtCOB"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:hint="@string/common_cob"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:focusable="false"
                     android:textColor="@color/white"
                     android:textSize="15sp" />
 

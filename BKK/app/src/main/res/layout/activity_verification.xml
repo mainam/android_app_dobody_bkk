@@ -113,8 +113,8 @@
 
                 <ImageView
                     android:id="@+id/ivProcessLoading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/btnVerify"
@@ -122,12 +122,12 @@
                     android:visibility="gone" />
                 <ImageView
                     android:id="@+id/ivDone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/ivProcessLoading"
-                    android:src="@drawable/ic_loading"
+                    android:src="@drawable/ic_done"
                     android:visibility="gone" />
 
                 <TextView
