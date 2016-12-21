@@ -21,6 +21,6 @@ public class ServerConstants {
 //        return "http://zeitmedia.vn/forexapi/public/";
 //    }
     public static String getServerLink() {
-        return "https://103.11.140.83:8888/";
+        return "http://103.11.140.83:8888/";
     }
 }

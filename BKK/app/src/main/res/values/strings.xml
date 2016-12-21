@@ -18,6 +18,7 @@
     <string name="common_verify">"VERIFY"</string>
     <string name="common_resend">RESEND</string>
     <string name="common_verification">VERIFICATION</string>
+    <string name="common_main">MAIN</string>
     <string name="common_msg_error_verification_code_invalid">Your verification code is not valid!</string>
     <string name="common_money_remittance">MONEY REMITTANCE</string>
     <string name="text8">Username</string>
@@ -32,7 +33,7 @@
     <string name="common_unmatched_password">Unmatched password</string>
     <string name="text19">There is already an account registered with this details!</string>
     <string name="common_user_profile">USER PROFILE</string>
-    <string name="text21">Thank you for registering! You are almost done. Please fill up the following information to complete your profile:</string>
+    <string name="common_update_profile_label_thankyou">Thank you for registering! You are almost done. Please fill up the following information to complete your profile:</string>
     <string name="common_first_name">First Name</string>
     <string name="common_last_name">Last Name</string>
     <string name="common_document_type">Document Type</string>

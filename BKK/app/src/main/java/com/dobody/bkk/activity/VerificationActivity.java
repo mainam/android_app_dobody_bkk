@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.Date;
 
 /**
  * A login screen that offers login via email/password.
@@ -57,6 +58,9 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnResend:
+                if (currentTime > new Date().getTime() - 900000)
+                    break;
+
                 View v = getLayoutInflater().inflate(R.layout.dialog_resend_verification_code, null, false);
                 final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setView(v).create();
                 alertDialog.show();
@@ -73,6 +77,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                         alertDialog.dismiss();
                     }
                 });
+                break;
             case R.id.btnVerify:
                 verify(txtCode.getText().toString());
                 break;
@@ -81,6 +86,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
 
 
     private void verify(final String code) {
+
         new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
             protected void onPreExecute() {
@@ -100,14 +106,21 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
                             btnVerify.setEnabled(true);
                             ivLoading.setVisibility(View.GONE);
                             ivDone.setVisibility(View.GONE);
+                            MainActivity.open(getActivity());
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            jsonObject=ConvertUtils.toJsonObject(jsonObject.get("data"));
-                            tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("error")));
+                            jsonObject = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            String data = ConvertUtils.toString(jsonObject.get("otp"));
+                            tvErrorMessage.setText(data);
                             tvErrorMessage.setVisibility(View.VISIBLE);
+                            if (data.isEmpty()) {
+                                data = ConvertUtils.toString(jsonObject.get("error"));
+                                tvErrorMessage.setText(data);
+
+                            }
+                            btnVerify.setEnabled(true);
+                            ivLoading.setVisibility(View.GONE);
                         }
-                        btnVerify.setEnabled(true);
-                        ivLoading.setVisibility(View.GONE);
                     }
                 }, 1000);
                 super.onPostExecute(aVoid);
@@ -128,7 +141,11 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
         }.execute();
     }
 
+    long currentTime = 0;
+
     private void resend() {
+
+        currentTime = new Date().getTime();
         new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
             protected void onPreExecute() {

@@ -122,19 +122,19 @@ public class UserInfo {
     public static ClientUtils.DataResponse updateProfile(String id, String token, String firstName, String lastName, String documentType, String documentExpiry, String email, String phone, String address, String dob, String gender, String country_of_birth) throws UnknownHostException, SocketTimeoutException {
 
         try {
-            return ClientUtils.patchData(ServerConstants.API_UPDATE_PROFILE+id, token, new JSONObject()
-                    .put("first_name",firstName)
-                    .put("last_name",lastName)
-                    .put("document_type",documentType)
-                    .put("document_expiry",documentExpiry)
-                    .put("email",email)
-                    .put("phone",phone)
-                    .put("address_1",address)
-                    .put("address_2","")
-                    .put("address_3","")
-                    .put("dob",dob)
-                    .put("gender",gender)
-                    .put("country_of_birth",country_of_birth)
+            return ClientUtils.patchData(ServerConstants.API_UPDATE_PROFILE + id, token, new JSONObject()
+                            .put("first_name", firstName)
+                            .put("last_name", lastName)
+                            .put("document_type", documentType)
+                            .put("document_expiry", documentExpiry)
+                            .put("email", email)
+                            .put("phone", phone)
+                            .put("address_1", address)
+                            .put("address_2", "")
+                            .put("address_3", "")
+                            .put("dob", dob)
+                            .put("gender", gender)
+                            .put("country_of_birth", country_of_birth)
                     , TimeoutConstants.TIMEOUT_DEFAULT);
         } catch (SocketTimeoutException e) {
             throw e;
@@ -145,5 +145,22 @@ public class UserInfo {
 
         }
 
+    }
+
+
+    public enum EnumStatus {
+        VERIFYING,
+        PENDING,
+        SUSPENDED,
+        ACTIVE;
+
+        public static EnumStatus parse(String string) {
+            try {
+                return valueOf(string);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return PENDING;
+        }
     }
 }

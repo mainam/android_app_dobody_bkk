@@ -114,7 +114,11 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                     tlConfirmPassword.setErrorEnabled(true);
                     return;
                 }
-                register(txtID.getText().toString(), txtUserName.getText().toString(), txtMobile.getText().toString(), txtPassword.getText().toString(), txtConfirmPassword.getText().toString());
+                String mobile = txtMobile.getText().toString();
+                if(!mobile.startsWith("65"))
+                    mobile="65"+mobile;
+
+                register(txtID.getText().toString(), txtUserName.getText().toString(), mobile, txtPassword.getText().toString(), txtConfirmPassword.getText().toString());
                 break;
         }
     }
@@ -136,8 +140,26 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                     public void run() {
                         if (aVoid != null && aVoid.is201()) {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            UserInfo.setCurrentUser(getActivity(), jsonObject);
-                            UserProfileActivity.open(getActivity(), id, jsonObject.toString());
+                            JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            jsonObject1 = ConvertUtils.toJsonObject(jsonObject1.get("user"));
+                            UserInfo.EnumStatus status = UserInfo.EnumStatus.parse(ConvertUtils.toString(jsonObject1.get("status")));
+                            switch (status) {
+                                case SUSPENDED:
+                                    LoginActivity.open(getActivity());
+                                    break;
+                                case ACTIVE:
+                                    UserInfo.setCurrentUser(getActivity(), jsonObject);
+                                    UserProfileActivity.open(getActivity(), id);
+                                    break;
+                                case PENDING:
+                                    UserInfo.setCurrentUser(getActivity(), jsonObject);
+                                    UserProfileActivity.open(getActivity(), id);
+                                case VERIFYING:
+                                    UserInfo.setCurrentUser(getActivity(), jsonObject);
+                                    VerificationActivity.open(getActivity());
+                                    break;
+
+                            }
                             finish();
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());

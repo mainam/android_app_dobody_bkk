@@ -1,5 +1,6 @@
 package com.dobody.bkk.utils;
 
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -360,6 +362,39 @@ public class ConvertUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static JsonObject jwtToJsonObject(String authToken) {
+        try {
+            String[] segments = authToken.split("\\.");
+            String base64String = segments[1];
+            int requiredLength = (int) (4 * Math.ceil(base64String.length() / 4.0));
+            int nbrPaddings = requiredLength - base64String.length();
+
+            if (nbrPaddings > 0) {
+                base64String = base64String + "====".substring(0, nbrPaddings);
+            }
+
+            base64String = base64String.replace("-", "+");
+            base64String = base64String.replace("_", "/");
+
+            byte[] data = Base64.decode(base64String, Base64.DEFAULT);
+            String text = new String(data, "UTF-8");
+            return ConvertUtils.toJsonObject(text);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return new JsonObject();
+    }
+
+    public static String textToBase64(String text) {
+        try {
+            byte[] data = text.getBytes("UTF-8");
+            return Base64.encodeToString(data, Base64.DEFAULT);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

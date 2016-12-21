@@ -62,7 +62,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         setContentView(R.layout.activity_user_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        jsonObject = ConvertUtils.toJsonObject(getIntent().getStringExtra(Constants.DATA_DATA));
+        jsonObject = UserInfo.getCurrentUser();
         txtID = (EditText) findViewById(R.id.txtId);
         txtID.setEnabled(false);
         txtFirstName = (EditText) findViewById(R.id.txtFirstName);
@@ -80,6 +80,15 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         txtDocumentValidityDate.setOnClickListener(this);
         txtDateOfBirth.setOnClickListener(this);
         btnWarning = findViewById(R.id.btnWarning);
+        JsonObject jsonObject1 = ConvertUtils.toJsonObject(ConvertUtils.toString(jsonObject.get("access_token")));
+        UserInfo.EnumStatus status = UserInfo.EnumStatus.parse(ConvertUtils.toString(jsonObject1.get("status")));
+        if (status == UserInfo.EnumStatus.PENDING) {
+            btnWarning.setVisibility(View.VISIBLE);
+        } else {
+            btnWarning.setVisibility(View.GONE);
+        }
+
+
         if (ConvertUtils.toString(ConvertUtils.toJsonObject(ConvertUtils.toJsonObject(jsonObject.get("data")).get("user")).get("status")).equals("VERIFYING")) {
             btnWarning.setVisibility(View.VISIBLE);
             btnWarning.setOnClickListener(this);
@@ -94,7 +103,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 //        ivLoading = findViewById(R.id.ivProcessLoading);
         btnSave.setOnClickListener(this);
         country.put("Vietnam", "VN");
-        country.put("Singapor", "SG");
+        country.put("Singapore", "SG");
         country.put("Thailand", "TH");
         country.put("Laos", "LA");
         country.put("Korea", "KR");
@@ -131,10 +140,9 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
     };
 
-    public static void open(Context context, String id, String data) {
+    public static void open(Context context, String id) {
         Intent intent = new Intent(context, UserProfileActivity.class);
         intent.putExtra(Constants.DATA_ID, id);
-        intent.putExtra(Constants.DATA_DATA, data);
         context.startActivity(intent);
     }
 
@@ -166,7 +174,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                     public void bindData(ViewHolder viewHolder, String data, int position) {
                         viewHolder.tvName.setText(data);
                     }
-                }, ConvertUtils.toArrayList(String.class, "Vietnam", "Singapor", "Thailand", "Laos", "Korea"), new BaseRecyclerAdapter.OnClickListener() {
+                }, ConvertUtils.toArrayList(String.class, "Singapore"), new BaseRecyclerAdapter.OnClickListener() {
                     @Override
                     public void onClick(View v, int position, Object o) {
                         txtCOB.setText(o.toString());

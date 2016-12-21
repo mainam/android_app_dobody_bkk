@@ -85,9 +85,29 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
                     public void run() {
                         if (aVoid != null && aVoid.is200()) {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            UserInfo.setCurrentUser(getActivity(), jsonObject);
-                            UserProfileActivity.open(getActivity(), "", jsonObject.toString());
+                            JsonObject jsonObject1 = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            jsonObject1 = ConvertUtils.jwtToJsonObject(ConvertUtils.toString(jsonObject1.get("access_token")));
+                            UserInfo.EnumStatus status = UserInfo.EnumStatus.parse(ConvertUtils.toString(jsonObject1.get("status")));
+                            switch (status) {
+                                case SUSPENDED:
+                                    LoginActivity.open(getActivity());
+                                    break;
+                                case ACTIVE:
+                                    UserInfo.setCurrentUser(getActivity(), jsonObject);
+                                    UserProfileActivity.open(getActivity(), "");
+                                    break;
+                                case PENDING:
+                                    UserInfo.setCurrentUser(getActivity(), jsonObject);
+                                    UserProfileActivity.open(getActivity(), "");
+                                case VERIFYING:
+                                    UserInfo.setCurrentUser(getActivity(), jsonObject);
+                                    VerificationActivity.open(getActivity());
+                                    break;
+
+                            }
                             finish();
+
+
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
                             tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
