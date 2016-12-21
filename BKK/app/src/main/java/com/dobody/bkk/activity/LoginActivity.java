@@ -110,7 +110,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
                         } else {
                             JsonObject jsonObject = ConvertUtils.toJsonObject(aVoid.getBody());
-                            tvErrorMessage.setText(ConvertUtils.toString(jsonObject.get("message")));
+                            jsonObject = ConvertUtils.toJsonObject(jsonObject.get("data"));
+                            String data = ConvertUtils.toString(jsonObject.get("error"));
+                            tvErrorMessage.setText(data);
+                            if(data.isEmpty())
+                                tvErrorMessage.setText("your username and password is incorrect!");
+
                             tvErrorMessage.setVisibility(View.VISIBLE);
                         }
                         btnLogin.setEnabled(true);

@@ -103,7 +103,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 //        ivLoading = findViewById(R.id.ivProcessLoading);
         btnSave.setOnClickListener(this);
         country.put("Vietnam", "VN");
-        country.put("Singapore", "SG");
+        country.put("Singapore", "SINGAPORE");
         country.put("Thailand", "TH");
         country.put("Laos", "LA");
         country.put("Korea", "KR");

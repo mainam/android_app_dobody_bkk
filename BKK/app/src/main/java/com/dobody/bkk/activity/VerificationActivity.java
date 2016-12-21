@@ -58,7 +58,7 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnResend:
-                if (currentTime > new Date().getTime() - 900000)
+                if (currentTime > new Date().getTime() - 900000 && time >= 3)
                     break;
 
                 View v = getLayoutInflater().inflate(R.layout.dialog_resend_verification_code, null, false);
@@ -142,10 +142,12 @@ public class VerificationActivity extends BaseActivity implements View.OnClickLi
     }
 
     long currentTime = 0;
+    int time = 0;
 
     private void resend() {
 
         currentTime = new Date().getTime();
+        time++;
         new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
             protected void onPreExecute() {

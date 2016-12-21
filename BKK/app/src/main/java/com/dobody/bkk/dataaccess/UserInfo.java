@@ -59,7 +59,8 @@ public class UserInfo {
                             .put("username", username)
                             .put("password", password)
                             .put("password_confirm", passwordConfirm)
-                            .put("country", "VN")
+                            .put("country", "SINGAPORE")
+                            .put("agent", "BKK FOREX PTE LTD")
                     , TimeoutConstants.TIMEOUT_DEFAULT);
         } catch (SocketTimeoutException e) {
             throw e;
