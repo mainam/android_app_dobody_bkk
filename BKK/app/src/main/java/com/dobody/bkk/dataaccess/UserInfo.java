@@ -51,7 +51,7 @@ public class UserInfo {
         }
     }
 
-    public static ClientUtils.DataResponse register(String id, String username, String mobile, String password, String passwordConfirm) throws UnknownHostException, SocketTimeoutException {
+    public static ClientUtils.DataResponse register(String id, String username, String mobile, String password, String passwordConfirm,String country) throws UnknownHostException, SocketTimeoutException {
         try {
             return ClientUtils.postData(ServerConstants.API_REGISTER, new JSONObject()
                             .put("document_id", id)
@@ -59,7 +59,7 @@ public class UserInfo {
                             .put("username", username)
                             .put("password", password)
                             .put("password_confirm", passwordConfirm)
-                            .put("country", "SINGAPORE")
+                            .put("country", country)
                             .put("agent", "BKK FOREX PTE LTD")
                     , TimeoutConstants.TIMEOUT_DEFAULT);
         } catch (SocketTimeoutException e) {

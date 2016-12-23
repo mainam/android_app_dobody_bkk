@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 
 import com.dobody.bkk.BaseActivity;
 import com.dobody.bkk.R;
+import com.dobody.bkk.dataaccess.CountryInfo;
 import com.dobody.bkk.dataaccess.UserInfo;
+import com.dobody.bkk.utils.AndroidPermissionUtils;
 import com.dobody.bkk.utils.ClientUtils;
 import com.dobody.bkk.utils.ConvertUtils;
 import com.google.gson.JsonObject;
@@ -44,6 +47,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
     private TextInputLayout tlPassword;
     private TextInputLayout tlMobile;
     private TextInputLayout tlUserName;
+    private String countryName= "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +71,33 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
         tlMobile = (TextInputLayout) findViewById(R.id.tlMobile);
         tlUserName = (TextInputLayout) findViewById(R.id.tlUserName);
         txtPassword.addTextChangedListener(textWatcher);
+
+        requestPermission(new AndroidPermissionUtils.OnCallbackRequestPermission() {
+            @Override
+            public void onSuccess() {
+                try {
+                    TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    String mPhoneNumber = tMgr.getLine1Number();
+                    if (mPhoneNumber != null)
+                        txtMobile.setText(mPhoneNumber);
+                    countryName = CountryInfo.getCountryName(tMgr.getSimCountryIso());
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+
+            @Override
+            public void currentPerrmission(boolean hasPermission) {
+            }
+        }, AndroidPermissionUtils.TypePermission.PERMISSION_READ_SMS);
     }
+
 
     TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -118,12 +148,12 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 //                if(!mobile.startsWith("65"))
 //                    mobile="65"+mobile;
 
-                register(txtID.getText().toString(), txtUserName.getText().toString(), mobile, txtPassword.getText().toString(), txtConfirmPassword.getText().toString());
+                register(txtID.getText().toString(), txtUserName.getText().toString(), mobile, txtPassword.getText().toString(), txtConfirmPassword.getText().toString(),countryName);
                 break;
         }
     }
 
-    private void register(final String id, final String username, final String mobile, final String password, final String confirmPassword) {
+    private void register(final String id, final String username, final String mobile, final String password, final String confirmPassword, final String country) {
         new AsyncTask<Void, Void, ClientUtils.DataResponse>() {
             @Override
             protected void onPreExecute() {
@@ -192,7 +222,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
             @Override
             protected ClientUtils.DataResponse doInBackground(Void... voids) {
                 try {
-                    return UserInfo.register(id, username, mobile, password, confirmPassword);
+                    return UserInfo.register(id, username, mobile, password, confirmPassword,country);
                 } catch (SocketTimeoutException e) {
                     e.printStackTrace();
                 } catch (UnknownHostException e) {

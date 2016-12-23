@@ -7,12 +7,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.dobody.bkk.constant.Constants;
+import com.dobody.bkk.utils.AndroidPermissionUtils;
 
 /**
  * Created by MaiNam on 12/1/2016.
@@ -292,5 +294,26 @@ public class BaseActivity extends AppCompatActivity {
         return this;
     }
 
+    public AndroidPermissionUtils.OnCallbackRequestPermission callbackRequestPermission = null;
+
+    public void requestPermission(AndroidPermissionUtils.OnCallbackRequestPermission onCallbackRequestPermission, AndroidPermissionUtils.TypePermission... typePermissions) {
+        callbackRequestPermission = onCallbackRequestPermission;
+        boolean hasPermission = AndroidPermissionUtils.mayRequestPermission(getActivity(), typePermissions);
+        if (callbackRequestPermission != null) {
+            callbackRequestPermission.currentPerrmission(hasPermission);
+        }
+    }
+
+    public static void requestPermission(Context context, AndroidPermissionUtils.OnCallbackRequestPermission onCallbackRequestPermission, AndroidPermissionUtils.TypePermission... typePermissions) {
+        if (context instanceof BaseActivity) {
+            ((BaseActivity) context).requestPermission(onCallbackRequestPermission, typePermissions);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        AndroidPermissionUtils.getPermission(requestCode, grantResults, callbackRequestPermission);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
 }
