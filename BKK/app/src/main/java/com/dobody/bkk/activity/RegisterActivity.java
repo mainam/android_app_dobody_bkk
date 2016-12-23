@@ -115,8 +115,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                     return;
                 }
                 String mobile = txtMobile.getText().toString();
-                if(!mobile.startsWith("65"))
-                    mobile="65"+mobile;
+//                if(!mobile.startsWith("65"))
+//                    mobile="65"+mobile;
 
                 register(txtID.getText().toString(), txtUserName.getText().toString(), mobile, txtPassword.getText().toString(), txtConfirmPassword.getText().toString());
                 break;
