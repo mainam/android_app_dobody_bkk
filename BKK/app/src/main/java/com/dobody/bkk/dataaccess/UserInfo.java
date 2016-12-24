@@ -14,7 +14,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 /**
- * Created by MaiNam on 11/30/2016.
+ * Created by Admin on 11/30/2016.
  */
 
 public class UserInfo {

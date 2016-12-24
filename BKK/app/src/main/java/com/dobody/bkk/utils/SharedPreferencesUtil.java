@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Created by MaiNam on 12/6/2016.
+ * Created by Admin on 12/6/2016.
  */
 public class SharedPreferencesUtil {
     static String MY_PREFS_NAME = "bkk";

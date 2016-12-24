@@ -53,7 +53,7 @@
         android:id="@+id/login_form"
         android:layout_below="@id/toolbar"
         android:layout_above="@id/copyright"
-
+        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="20dp"

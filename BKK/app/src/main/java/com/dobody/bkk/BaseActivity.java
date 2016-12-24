@@ -17,7 +17,7 @@ import com.dobody.bkk.constant.Constants;
 import com.dobody.bkk.utils.AndroidPermissionUtils;
 
 /**
- * Created by MaiNam on 12/1/2016.
+ * Created by Admin on 12/1/2016.
  */
 
 public class BaseActivity extends AppCompatActivity {

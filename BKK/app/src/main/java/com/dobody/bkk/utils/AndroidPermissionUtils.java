@@ -11,7 +11,7 @@ import com.dobody.bkk.constant.Constants;
 import java.util.ArrayList;
 
 /**
- * Created by MaiNam on 6/23/2016.
+ * Created by Admin on 6/23/2016.
  */
 public class AndroidPermissionUtils {
     private static final int REQUEST_READ_CONTACTS = 100;

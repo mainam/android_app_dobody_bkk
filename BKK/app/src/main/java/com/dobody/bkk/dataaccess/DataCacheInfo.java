@@ -7,7 +7,7 @@ import com.dobody.bkk.utils.ConvertUtils;
 import com.dobody.bkk.utils.SharedPreferencesUtil;
 
 /**
- * Created by MaiNam on 8/6/2016.
+ * Created by Admin on 8/6/2016.
  */
 
 public class DataCacheInfo {
