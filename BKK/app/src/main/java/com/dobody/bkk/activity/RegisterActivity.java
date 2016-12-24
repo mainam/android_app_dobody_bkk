@@ -94,6 +94,16 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void currentPerrmission(boolean hasPermission) {
+                try {
+                    TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    String mPhoneNumber = tMgr.getLine1Number();
+                    if (mPhoneNumber != null)
+                        txtMobile.setText(mPhoneNumber);
+                    countryName = CountryInfo.getCountryName(tMgr.getSimCountryIso());
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }, AndroidPermissionUtils.TypePermission.PERMISSION_READ_SMS);
     }
