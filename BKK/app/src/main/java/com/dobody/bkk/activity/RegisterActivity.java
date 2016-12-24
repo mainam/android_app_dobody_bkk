@@ -78,8 +78,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
                 try {
                     TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                     String mPhoneNumber = tMgr.getLine1Number();
-                    if (mPhoneNumber != null)
+                    if (mPhoneNumber != null) {
+                        mPhoneNumber.replace("+","");
                         txtMobile.setText(mPhoneNumber);
+                    }
                     countryName = CountryInfo.getCountryName(tMgr.getSimCountryIso());
                 }catch (Exception e)
                 {
